@@ -12,29 +12,69 @@ namespace FundoNote.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        FundoContext fundo;
         IUserBL userBL;
-        public UserController(IUserBL userBL)
+        public UserController(IUserBL userBL, FundoContext fundo)
         {
             this.userBL = userBL;
-        }
+            this.fundo = fundo;
+    }
         [HttpPost("register")]
         public ActionResult RegisterUser(UserPostModel user)
         {
             try
             {
-                var result = this.userBL.AddUser(user);
-                if (result != null)
+                var getUserData = fundo.Users.FirstOrDefault(u => u.email == user.email);
+                if (getUserData != null)
                 {
-                  return this.Ok(new { success = true, message = $"Registration Successful {user.email}" });
+                    return this.Ok(new { success = false, message = $"{user.email} is Already Exists" });
                 }
-                return this.BadRequest(new { success = false, message = $"Registration failed {user.email}" });
+                this.userBL.AddUser(user);
+                return this.Ok(new { success = true, message = $"Registration Successfull { user.email}" });
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
         }
+
+        [HttpPost("Login/{email}/{password}")]
+        public ActionResult LoginUser(string email, string password)
+        {
+            try
+            {
+                var result = this.userBL.LoginUser(email,password);
+                if (result != null)
+                {
+                    return this.Ok(new { success = true, message = $"Login Successful {result}" });
+                }
+                return this.BadRequest(new { success = false, message = $"Login failed {result}" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        //[HttpPut("ChangePassword")]
+        //public ActionResult ChangePassword(string email, string password)
+        //{
+        //    try
+        //    {
+        //        var result = this.userBL.ChangePassword(email, password);
+
+        //        if (result != null)
+        //        {
+        //            return this.Ok(new { success = true, message = $"{result}" });
+        //        }
+        //        return this.BadRequest(new { success = false, message = $"{result}" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
     }
 }
 

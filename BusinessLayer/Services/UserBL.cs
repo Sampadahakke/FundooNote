@@ -10,7 +10,7 @@ namespace BusinessLayer.Services
 {
     public class UserBL : IUserBL
     {
-        private readonly IUserRL userRL;
+        IUserRL userRL;
         public UserBL(IUserRL userRL)
         {
             this.userRL = userRL;   
@@ -26,5 +26,30 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
+
+        //public string ChangePassword(string email, string password)
+        //{
+        //    try
+        //    {
+        //        return this.userRL.ChangePassword(email, password);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        public string LoginUser(string email, string password)
+        {
+            try
+            {
+                return userRL.LoginUser(email, password);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

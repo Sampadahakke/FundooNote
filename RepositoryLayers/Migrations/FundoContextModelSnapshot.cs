@@ -38,8 +38,8 @@ namespace RepositoryLayer.Migrations
                     b.Property<string>("lastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("password")
-                        .HasColumnType("bigint");
+                    b.Property<string>("password")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("registerdDate")
                         .HasColumnType("datetime2");

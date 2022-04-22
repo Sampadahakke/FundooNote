@@ -8,14 +8,13 @@ namespace RepositoryLayer.FundoNoteContext
 {
     public class FundoContext : DbContext
     {
-        public FundoContext(DbContextOptions<FundoContext> options)
+        public FundoContext(DbContextOptions options)
            : base(options)
         {
         }
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> Users{ get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             modelBuilder.Entity<User>()
             .HasIndex(u => u.email)
             .IsUnique();

@@ -10,7 +10,7 @@ using RepositoryLayer.FundoNoteContext;
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(FundoContext))]
-    [Migration("20220420030806_InitialDatabaseMigration")]
+    [Migration("20220421151415_InitialDatabaseMigration")]
     partial class InitialDatabaseMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,8 +40,8 @@ namespace RepositoryLayer.Migrations
                     b.Property<string>("lastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("password")
-                        .HasColumnType("bigint");
+                    b.Property<string>("password")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("registerdDate")
                         .HasColumnType("datetime2");

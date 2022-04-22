@@ -15,7 +15,7 @@ namespace RepositoryLayer.Entity
         public string lastName { get; set; }
         public string email { get; set; }
         public DateTime registerdDate { get; set; }
-        public long password { get; set; }
+        public string password { get; set; }
         public string address { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace RepositoryLayer.Migrations
                     lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     email = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     registerdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    password = table.Column<long>(type: "bigint", nullable: false),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
