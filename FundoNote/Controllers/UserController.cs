@@ -43,7 +43,7 @@ namespace FundoNote.Controllers
         }
 
         //HTTP method to handle get user request
-        [HttpPost("GetUser/{UserId}")]
+        [HttpGet("GetUser/{UserId}")]
         public ActionResult GetUser(int UserId)
         {
             try
