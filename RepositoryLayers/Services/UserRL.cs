@@ -51,6 +51,7 @@ namespace RepositoryLayer.UserClass
             }
         }
 
+        //Creating method to get details of user
         public User GetUser(int userid)
         {
             try
@@ -64,6 +65,19 @@ namespace RepositoryLayer.UserClass
             }
         }
 
+        //Creating method to get details of all users
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                List<User> users=fundo.Users.ToList();
+               return users;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         //Creating method to login user
         public string LoginUser(string email, string password)
         {

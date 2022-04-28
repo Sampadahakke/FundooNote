@@ -42,6 +42,19 @@ namespace BusinessLayer.Services
             }
         }
 
+        //Creating method to get all user
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                return this.userRL.GetAllUsers();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         //Creating method to login user
         public string LoginUser(string email, string password)

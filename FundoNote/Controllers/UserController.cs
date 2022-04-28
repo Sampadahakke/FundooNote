@@ -43,7 +43,7 @@ namespace FundoNote.Controllers
         }
 
         //HTTP method to handle get user request
-        [HttpPost("GetUser/{UserId}")]
+        [HttpGet("GetUser/{UserId}")]
         public ActionResult GetUser(int UserId)
         {
             try
@@ -54,6 +54,25 @@ namespace FundoNote.Controllers
                     return this.Ok(new { success = false, message = "details get successfully", data=getUserData });
                 }
                 return this.BadRequest(new { success = true, message = "Failed to get user details" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        //HTTP method to handle get all users request
+        [HttpGet("GetAllUsers")]
+        public ActionResult GetAllUsers()
+        {
+            try
+            {
+                var getUsersData = this.userBL.GetAllUsers();
+                if (getUsersData != null)
+                {
+                    return this.Ok(new { success = false, message = "details get successfully", data = getUsersData });
+                }
+                return this.BadRequest(new { success = true, message = "Empty or Failed to get User details" });
             }
             catch (Exception ex)
             {
