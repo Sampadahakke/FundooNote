@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.FundoNoteContext;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace FundoNote.Controllers
 {
@@ -18,7 +19,9 @@ namespace FundoNote.Controllers
         {
             this.userBL = userBL;
             this.fundo = fundo;
-    }
+        }
+
+        //HTTP method to handle registration user request
         [HttpPost("register")]
         public ActionResult RegisterUser(UserPostModel user)
         {
@@ -38,6 +41,7 @@ namespace FundoNote.Controllers
             }
         }
 
+        //HTTP method to handle login user request
         [HttpPost("Login/{email}/{password}")]
         public ActionResult LoginUser(string email, string password)
         {
@@ -56,25 +60,26 @@ namespace FundoNote.Controllers
             }
         }
 
-        //[HttpPut("ChangePassword")]
-        //public ActionResult ChangePassword(string email, string password)
-        //{
-        //    try
-        //    {
-        //        var result = this.userBL.ChangePassword(email, password);
+        //HTTP method to handle forgrt password request
+        [HttpPost("ForgetPassword/{email}")]
+        public ActionResult ForgetPassword(string email)
+        {
+            try
+            {
+                var result = this.userBL.ForgetPassword(email);
+                if (result != false)
+                {
+                    return this.Ok(new { success = true, message = $"Mail sent successfully : {result}" });
+                }
+                return this.BadRequest(new { success = false, message = $"Failed to send mail : {result}" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-        //        if (result != null)
-        //        {
-        //            return this.Ok(new { success = true, message = $"{result}" });
-        //        }
-        //        return this.BadRequest(new { success = false, message = $"{result}" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
+      
     }
 }
 

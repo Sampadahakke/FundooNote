@@ -75,6 +75,12 @@ namespace FundoNote
                         Type = ReferenceType.SecurityScheme
                     }
                 };
+                setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
 
             });
         }

@@ -15,6 +15,8 @@ namespace BusinessLayer.Services
         {
             this.userRL = userRL;   
         }
+
+        //Creating method to add user in database
         public User AddUser(UserPostModel user)
         {
             try
@@ -27,18 +29,7 @@ namespace BusinessLayer.Services
             }
         }
 
-        //public string ChangePassword(string email, string password)
-        //{
-        //    try
-        //    {
-        //        return this.userRL.ChangePassword(email, password);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
+        //Creating method to login user
         public string LoginUser(string email, string password)
         {
             try
@@ -51,5 +42,17 @@ namespace BusinessLayer.Services
             }
         }
 
+        //Creating method to forget password which will return token
+        public bool ForgetPassword(string email)
+        {
+            try
+            {
+                return this.userRL.ForgetPassword(email);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
