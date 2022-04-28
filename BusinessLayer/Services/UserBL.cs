@@ -54,5 +54,18 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
+
+        //Creating method to change password 
+        public bool ChangePassword(string email, PasswordValidation valid)
+        {
+            try
+            {
+                return this.userRL.ChangePassword(email,valid);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
