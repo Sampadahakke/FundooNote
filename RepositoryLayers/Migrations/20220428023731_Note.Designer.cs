@@ -10,8 +10,8 @@ using RepositoryLayer.FundoNoteContext;
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(FundoContext))]
-    [Migration("20220421151415_InitialDatabaseMigration")]
-    partial class InitialDatabaseMigration
+    [Migration("20220428023731_Note")]
+    partial class Note
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
