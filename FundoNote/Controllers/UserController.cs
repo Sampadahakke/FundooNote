@@ -42,6 +42,25 @@ namespace FundoNote.Controllers
             }
         }
 
+        //HTTP method to handle get user request
+        [HttpPost("GetUser/{UserId}")]
+        public ActionResult GetUser(int UserId)
+        {
+            try
+            {
+                var getUserData = this.userBL.GetUser(UserId);
+                if (getUserData != null)
+                {
+                    return this.Ok(new { success = false, message = "details get successfully", data=getUserData });
+                }
+                return this.BadRequest(new { success = true, message = "Failed to get user details" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         //HTTP method to handle login user request
         [HttpPost("Login/{email}/{password}")]
         public ActionResult LoginUser(string email, string password)

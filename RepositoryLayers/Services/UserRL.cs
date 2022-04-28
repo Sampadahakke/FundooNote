@@ -51,6 +51,19 @@ namespace RepositoryLayer.UserClass
             }
         }
 
+        public User GetUser(int userid)
+        {
+            try
+            {
+                var result = fundo.Users.Where(u => u.userID == userid).FirstOrDefault();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         //Creating method to login user
         public string LoginUser(string email, string password)
         {
