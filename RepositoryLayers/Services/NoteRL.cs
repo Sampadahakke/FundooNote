@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryLayer.Services
 {
-    public class NoteRL:INoteRL
+    public class NoteRL : INoteRL
     {
         //Initializing class
         FundoContext fundo;
@@ -58,13 +58,176 @@ namespace RepositoryLayer.Services
         {
             try
             {
-                return await fundo.Notes.Where(u => u.NoteId == noteId )
+                return await fundo.Notes.Where(u => u.NoteId == noteId)
                 .Include(u => u.User).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        public async Task<List<Note>> GetAllNote(int userId)
+        {
+            try
+            {
+                return await fundo.Notes.Where(u => u.UserId == userId).Include(u => u.User).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task DeleteNote(int noteId, int userId)
+        {
+            try
+            {
+                Note res = fundo.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
+                fundo.Notes.Remove(res);
+                await fundo.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Note> UpdateNote(NotePostModel notePostModel, int noteId, int userId)
+        {
+            try
+            {
+                var res = fundo.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
+                if (res != null)
+                {
+                    res.Title = notePostModel.Title;
+                    res.Description = notePostModel.Description;
+                    res.BGColor = notePostModel.BGColor;
+                    res.IsArchive = notePostModel.IsArchive;
+                    res.IsReminder = notePostModel.IsReminder;
+                    res.IsPin = notePostModel.IsPin;
+                    res.IsTrash = notePostModel.IsTrash;
+                    res.ModifiedAt = DateTime.Now;
+                    await fundo.SaveChangesAsync();
+
+                    return await fundo.Notes.Where(a => a.NoteId == noteId).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<Note> ArchieveNote(int noteId, int userId)
+        {
+            try
+            {
+                var res = fundo.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
+                if (res != null)
+                {
+                    if (res.IsArchive == false)
+                    {
+                        res.IsArchive = true;
+                    }
+                    else
+                    {
+                        res.IsArchive = false;
+                    }
+                    await fundo.SaveChangesAsync();
+                    return await fundo.Notes.Where(a => a.NoteId == noteId).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public async Task<Note> PinNote(int noteId, int userId)
+        {
+            try
+            {
+                var res = fundo.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
+                if (res != null)
+                {
+                    if (res.IsPin == false)
+                    {
+                        res.IsPin = true;
+                    }
+                    else
+                    {
+                        res.IsPin = false;
+                    }
+                    await fundo.SaveChangesAsync();
+                    return await fundo.Notes.Where(a => a.NoteId == noteId).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public async Task<Note> TrashNote(int noteId, int userId)
+        {
+            try
+            {
+                var res = fundo.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
+                if (res != null)
+                {
+                    if (res.IsTrash == false)
+                    {
+                        res.IsTrash = true;
+                    }
+                    else
+                    {
+                        res.IsTrash = false;
+                    }
+                    await fundo.SaveChangesAsync();
+                    return await fundo.Notes.Where(a => a.NoteId == noteId).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public async Task<Note> ChangeColor(int noteId, int userId, string newColor)
+        {
+            try
+            {
+                var res = fundo.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
+                if (res != null)
+                {
+                    res.BGColor = newColor;
+                    await fundo.SaveChangesAsync();
+                    return await fundo.Notes.Where(a => a.NoteId == noteId).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
     }
 

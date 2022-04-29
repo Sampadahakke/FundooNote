@@ -16,11 +16,15 @@ namespace RepositoryLayer.Entity
 
         public int? userId { get; set; }
         
-        public  User User { get; set; }
+        public virtual User User { get; set; }
 
         public int? NoteId { get; set; }
         
-        public  Note Note { get; set; }
+        public virtual  Note Note { get; set; }
 
+        public static implicit operator List<object>(Label v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

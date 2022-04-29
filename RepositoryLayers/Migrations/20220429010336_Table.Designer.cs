@@ -10,7 +10,7 @@ using RepositoryLayer.FundoNoteContext;
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(FundoContext))]
-    [Migration("20220428230427_Table")]
+    [Migration("20220429010336_Table")]
     partial class Table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
