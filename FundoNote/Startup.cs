@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using RepositoryLayer.Interfaces;
+using RepositoryLayer.Services;
 
 namespace FundoNote
 {
@@ -38,6 +40,10 @@ namespace FundoNote
             services.AddControllers();
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<IUserRL, UserRL>();
+            services.AddTransient<INoteBL, NoteBL>();
+            services.AddTransient<INoteRL, NoteRL>();
+            services.AddTransient<ILabelBL, LabelBL>();
+            services.AddTransient<IlabelRL, LabelRL>();
             services.AddDbContext<FundoContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:Strings"]));
             services.AddAuthentication(x =>
             {
