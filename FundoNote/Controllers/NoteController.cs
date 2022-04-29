@@ -46,6 +46,7 @@ namespace FundoNote.Controllers
             }
         }
 
+        //HTTP method to handle get request
         [Authorize]
         [HttpGet("GetNote/{NoteId}")]
         public async Task<ActionResult> GetNote(int NoteId)
@@ -54,12 +55,17 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var res = fundo.Notes.FirstOrDefault(u=>u.NoteId == NoteId);
+                if(res == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"Note doesn't exists..." });
+                }
                 var result = await this.noteBL.GetNote(NoteId, userId);
                 if (result != null)
                 {
                    return this.Ok(new { success = true, message = $"Note get successfully", data = result });
                 }
-                return this.BadRequest(new { success = true, message = $"Failed to get note" });
+                return this.BadRequest(new { success = false, message = $"Failed to get note" });
             }
             catch (Exception ex)
             {
@@ -67,6 +73,7 @@ namespace FundoNote.Controllers
             }
         }
 
+        //HTTP method to handle get all notes
         [Authorize]
         [HttpGet("GetAllNotes")]
         public async Task<ActionResult> GetAllNotes()
@@ -75,6 +82,11 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var res = fundo.Notes.FirstOrDefault(u => u.UserId == userId);
+                if (res == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"User doesn't exists..." });
+                }
                 List<Note> result = new List<Note>();
                 result = await this.noteBL.GetAllNote(userId);
                 if(result != null)
@@ -89,6 +101,7 @@ namespace FundoNote.Controllers
             }
         }
 
+        //HTTP method to delete note
         [Authorize]
         [HttpDelete("DeleteNote/{noteId}")]
         public async Task<ActionResult> DeleteNote(int noteId)
@@ -97,6 +110,11 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var re = fundo.Notes.Where(x => x.UserId == userId && x.NoteId == noteId).FirstOrDefault();
+                if (re == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
+                }
                 await this.noteBL.DeleteNote(noteId, userId);
                 return this.Ok(new { success = true, message = "Note deleted successfully!!!" });
             }
@@ -106,6 +124,7 @@ namespace FundoNote.Controllers
             }
         }
 
+        //HTTP method to update the note
         [Authorize]
         [HttpPut("UpdateNote/{NoteId}")]
         public async Task<IActionResult> UpdateNote(NotePostModel notePostModel, int NoteId)
@@ -114,6 +133,11 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var re = fundo.Notes.Where(x => x.UserId == userId && x.NoteId == NoteId).FirstOrDefault();
+                if (re == null)
+                {
+                   return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
+                }
                 var result = await this.noteBL.UpdateNote(notePostModel, NoteId, userId);
                 return this.Ok(new { success = true, message = $"Note updated successfully!!!", data = result });
             }
@@ -123,6 +147,7 @@ namespace FundoNote.Controllers
             }
         }
 
+        //HTTP method to hadle put request
         [Authorize]
         [HttpPut("ArchieveNote/{noteId}")]
         public async Task<ActionResult> IsArchieveNote(int noteId)
@@ -131,6 +156,11 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                if (re == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
+                }
                 var res = await this.noteBL.ArchieveNote(noteId, userId);
                 if (res != null)
                     return this.Ok(new { success = true, message = "Note Archieved successfully!!!" });
@@ -143,7 +173,7 @@ namespace FundoNote.Controllers
             }
         }
 
-
+        //HTTP method to hadle put request
         [Authorize]
         [HttpPut("IsPinned/{noteId}")]
         public async Task<ActionResult> IsPinned(int noteId)
@@ -152,6 +182,11 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                if (re == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
+                }
                 var res = await this.noteBL.PinNote(noteId, userId);
                 if (res != null)
                     return this.Ok(new { success = true, message = "Note pinned successfully!!!" });
@@ -164,7 +199,7 @@ namespace FundoNote.Controllers
             }
         }
 
-
+        //HTTP method to hadle put request
         [Authorize]
         [HttpPut("IsTrash{noteId}")]
         public async Task<ActionResult> IsTrash(int noteId)
@@ -173,6 +208,11 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                if (re == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
+                }
                 var res = await this.noteBL.TrashNote(noteId, userId);
                 if (res != null)
                     return this.Ok(new { success = true, message = "Note trashed successfully!!!" });
@@ -185,7 +225,7 @@ namespace FundoNote.Controllers
             }
         }
 
-
+        //HTTP method to hadle put request
         [Authorize]
         [HttpPut("ChangeColorNote/{noteId}")]
         public async Task<ActionResult> ChangeColorNote(int noteId, string color)
@@ -194,6 +234,11 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
+                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                if (re == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
+                }
                 var res = await this.noteBL.ChangeColor(noteId, userId, color);
                 if (res != null)
                     return this.Ok(new { success = true, message = "Note color changed successfully!!!" });

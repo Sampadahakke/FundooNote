@@ -84,7 +84,8 @@ namespace RepositoryLayer.UserClass
         {
             try
             {
-                var result = fundo.Users.Where(u => u.email == email && u.password == password).FirstOrDefault();
+                string pass = EncryptPassword(password);
+                var result = fundo.Users.Where(u => u.email == email && u.password == pass).FirstOrDefault();
                 if (result == null)
                 {
                     return null;

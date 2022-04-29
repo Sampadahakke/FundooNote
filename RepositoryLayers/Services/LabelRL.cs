@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using RepositoryLayer.Entity;
 using RepositoryLayer.FundoNoteContext;
 using RepositoryLayer.Interfaces;
 using System;
@@ -48,7 +49,7 @@ namespace RepositoryLayer.Services
         {
             try
             {
-               List<Entity.Label> reuslt = await fundo.Labels.Where(u => u.userId == userId).ToListAsync();
+               List<Entity.Label> reuslt = await fundo.Labels.Where(u => u.userId == userId).Include(u=>u.User).Include(u=>u.Note).ToListAsync();
                 return reuslt;
             }
             catch (Exception ex)
@@ -61,7 +62,7 @@ namespace RepositoryLayer.Services
         {
             try
             {
-                List<Entity.Label> reuslt = await fundo.Labels.Where(u => u.NoteId == NoteId).ToListAsync();
+                List<Entity.Label> reuslt = await fundo.Labels.Where(u => u.NoteId == NoteId).Include(u=>u.User).Include(u=>u.Note).ToListAsync();
                 return reuslt;
             }
             catch (Exception ex)
@@ -70,14 +71,16 @@ namespace RepositoryLayer.Services
             }
         }
 
-        public async Task<Entity.Label> UpdateLabel(Entity.Label label,int LabelId)
+        public async Task<Entity.Label> UpdateLabel(int userId,int LabelId, string LabelName)
         {
             try
             {
-                Entity.Label reuslt = fundo.Labels.FirstOrDefault(u => u.LabelId == LabelId);
+                
+                Entity.Label reuslt = fundo.Labels.FirstOrDefault(u => u.LabelId == LabelId && u.userId==userId );
+               
                 if (reuslt != null)
                 {
-                    reuslt.LabelName = label.LabelName;
+                    reuslt.LabelName = LabelName;
                     await fundo.SaveChangesAsync();
                     var result = fundo.Labels.Where(u => u.LabelId == LabelId).FirstOrDefaultAsync();
                     return reuslt;
@@ -94,11 +97,11 @@ namespace RepositoryLayer.Services
             }
         }
 
-        public async Task DeleteLabel(int LabelId)
+        public async Task DeleteLabel(int LabelId,int userId)
         {
             try
             {
-                var result = fundo.Labels.FirstOrDefault(u => u.LabelId == LabelId);
+                var result = fundo.Labels.FirstOrDefault(u => u.LabelId == LabelId && u.userId==userId);
                 fundo.Labels.Remove(result);
                 await fundo.SaveChangesAsync();
             }

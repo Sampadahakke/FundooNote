@@ -37,13 +37,15 @@ namespace FundoNote
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options=>options.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<INoteBL, NoteBL>();
             services.AddTransient<INoteRL, NoteRL>();
             services.AddTransient<ILabelBL, LabelBL>();
             services.AddTransient<IlabelRL, LabelRL>();
+            services.AddTransient<ICollabBL,CollabBL>();
+            services.AddTransient<ICollabRL, CollabRL>();
             services.AddDbContext<FundoContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:Strings"]));
             services.AddAuthentication(x =>
             {

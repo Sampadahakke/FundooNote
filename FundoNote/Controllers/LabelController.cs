@@ -54,7 +54,7 @@ namespace FundoNote.Controllers
                 list = await this.labelBL.Getlabel(userId);
                 if (list == null)
                 {
-                    return this.BadRequest(new { success = true, message = "Failed to get label" });
+                    return this.BadRequest(new { success = false, message = "Failed to get label" });
                 }
                 return this.Ok(new { success = true, message = $"Label get successfully", data = list });
             }
@@ -87,12 +87,14 @@ namespace FundoNote.Controllers
 
         //HTTP method to handle update label request
         [Authorize]
-        [HttpPut("UpdateLabel/{LabelId}")]
-        public async Task<ActionResult> UpdateLabel(Label label,int LabelId)
+        [HttpPut("UpdateLabel/{LabelId}/{LabelName}")]
+        public async Task<ActionResult> UpdateLabel(string LabelName,int LabelId)
         {
             try
             {
-                var result = await this.labelBL.UpdateLabel(label,LabelId);
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
+                int userId = Int32.Parse(userid.Value);
+                var result = await this.labelBL.UpdateLabel(userId,LabelId,LabelName);
                 if (result == null)
                 {
                     return this.BadRequest(new { success = true, message = "Updation of Label failed" });
@@ -112,7 +114,9 @@ namespace FundoNote.Controllers
         {
             try
             {
-                await this.labelBL.DeleteLabel(LabelId);
+                var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
+                int userId = Int32.Parse(userid.Value);
+                await this.labelBL.DeleteLabel(LabelId,userId);
                 return this.Ok(new { success = true, message = $"Label Deleted successfully"});
             }
             catch (Exception ex)

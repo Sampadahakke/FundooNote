@@ -48,6 +48,11 @@ namespace FundoNote.Controllers
         {
             try
             {
+                var Id = fundo.Users.Where(x => x.userID == UserId).FirstOrDefault();
+                if (Id == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"User doesn't exists" });
+                }
                 var getUserData = this.userBL.GetUser(UserId);
                 if (getUserData != null)
                 {
@@ -86,6 +91,11 @@ namespace FundoNote.Controllers
         {
             try
             {
+                var Id = fundo.Users.Where(x => x.email == email&& x.password==password).FirstOrDefault();
+                if (Id == null)
+                {
+                    return this.BadRequest(new { success = false, message = $"Invalid EmailId or Password" });
+                }
                 var result = this.userBL.LoginUser(email,password);
                 if (result != null)
                 {
@@ -98,6 +108,7 @@ namespace FundoNote.Controllers
                 throw ex;
             }
         }
+
 
         //HTTP method to handle forgrt password request
         [HttpPost("ForgetPassword/{email}")]
