@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FundoNote.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CollaboratorController : ControllerBase
     {
@@ -84,7 +84,7 @@ namespace FundoNote.Controllers
           
         //HTTP method to handle get collaborator request
         [Authorize]
-        [HttpGet("GetCollaboratorByNoteId")]
+        [HttpGet("GetCollaboratorByUserId")]
         public async Task<ActionResult> GetCollaboratorByUserId()
         {
             try

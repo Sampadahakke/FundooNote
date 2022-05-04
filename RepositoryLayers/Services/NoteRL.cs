@@ -44,6 +44,7 @@ namespace RepositoryLayer.Services
                 note.IsPin = false;
                 note.IsTrash = false;
                 note.CreatedAt = DateTime.Now;
+                note.ModifiedAt=DateTime.Now;
                 fundo.Add(note);
                 await fundo.SaveChangesAsync();
                 return note;
@@ -78,6 +79,19 @@ namespace RepositoryLayer.Services
                 throw e;
             }
         }
+
+        public async Task<List<Note>> GetAllNotes_ByRadisCache()
+        {
+            try
+            {
+                return await fundo.Notes.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        
 
         public async Task DeleteNote(int noteId, int userId)
         {

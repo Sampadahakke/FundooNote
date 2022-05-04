@@ -54,6 +54,19 @@ namespace BusinessLayer.Services
             }
         }
 
+        public async Task<List<Note>> GetAllNotes_ByRadisCache()
+        {
+            try
+            {
+                return await this.noteRL.GetAllNotes_ByRadisCache();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         public async Task DeleteNote(int noteId, int userId)
         {
             try

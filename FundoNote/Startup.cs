@@ -38,6 +38,7 @@ namespace FundoNote
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson(options=>options.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddMemoryCache();
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<INoteBL, NoteBL>();
@@ -91,6 +92,12 @@ namespace FundoNote
                 });
 
             });
+            services.AddDistributedRedisCache(
+                options =>
+                {
+                    options.Configuration = "Localhost:6379";
+                }
+                );
         }
 
 

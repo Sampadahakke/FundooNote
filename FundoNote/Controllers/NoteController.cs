@@ -3,25 +3,32 @@ using DatabaseLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using RepositoryLayer.FundoNoteContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FundoNote.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class NoteController : ControllerBase
     {
         FundoContext fundo;
         INoteBL noteBL;
-        public NoteController(INoteBL noteBL, FundoContext fundo)
+        public readonly IDistributedCache distributedCache;
+        private string keyName = "Sampada";
+        public NoteController(INoteBL noteBL, FundoContext fundo, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.noteBL = noteBL;
             this.fundo = fundo;
+            this.distributedCache = distributedCache;
         }
 
         //HTTP method to handle registration user request
@@ -156,7 +163,7 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
-                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                var re = fundo.Notes.Where(x => x.UserId == userId && x.NoteId == noteId).FirstOrDefault();
                 if (re == null)
                 {
                     return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
@@ -182,7 +189,7 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
-                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                var re = fundo.Notes.Where(x => x.UserId == userId && x.NoteId == noteId).FirstOrDefault();
                 if (re == null)
                 {
                     return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
@@ -208,7 +215,7 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
-                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                var re = fundo.Notes.Where(x => x.UserId == userId && x.NoteId == noteId).FirstOrDefault();
                 if (re == null)
                 {
                     return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
@@ -234,7 +241,7 @@ namespace FundoNote.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
-                var re = fundo.Collaborators.Where(x => x.userId == userId && x.NoteId == noteId).FirstOrDefault();
+                var re = fundo.Notes.Where(x => x.UserId == userId && x.NoteId == noteId).FirstOrDefault();
                 if (re == null)
                 {
                     return this.BadRequest(new { success = false, message = $"Note doesn't exists" });
@@ -244,6 +251,41 @@ namespace FundoNote.Controllers
                     return this.Ok(new { success = true, message = "Note color changed successfully!!!" });
                 else
                     return this.BadRequest(new { success = false, message = "Failed to change color note or Id does not exists" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        //GetAllNote api using RedisCache
+        
+        [HttpGet("GetAllNotesRedis")]
+        public async Task<ActionResult> GetAllNotes_ByRadisCache()
+        {
+            try
+            {
+                
+                string serializeNoteList=string.Empty;
+                var noteList = new List<Note>();
+                var redisNoteList = await distributedCache.GetAsync(keyName);
+                if (redisNoteList != null)
+                {
+                    serializeNoteList = Encoding.UTF8.GetString(redisNoteList);
+                    noteList = JsonConvert.DeserializeObject<List<Note>>(serializeNoteList);
+                }
+                else
+                {
+
+                    noteList = await this.noteBL.GetAllNotes_ByRadisCache();
+                    serializeNoteList=JsonConvert.SerializeObject(noteList);
+                    redisNoteList=Encoding.UTF8.GetBytes(serializeNoteList);
+                    var option = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(20)).SetAbsoluteExpiration(TimeSpan.FromHours(6));
+                    await distributedCache.SetAsync(keyName,redisNoteList,option);
+                }
+                return this.Ok(new { success = true, message = "Get note successful!!!", data=noteList});
+
+
             }
             catch (Exception ex)
             {

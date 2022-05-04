@@ -3,6 +3,7 @@ using DatabaseLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using RepositoryLayer.FundoNoteContext;
 using System;
 using System.Linq;
@@ -10,12 +11,13 @@ using System.Text;
 
 namespace FundoNote.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
         FundoContext fundo;
         IUserBL userBL;
+        
         public UserController(IUserBL userBL, FundoContext fundo)
         {
             this.userBL = userBL;
@@ -91,11 +93,6 @@ namespace FundoNote.Controllers
         {
             try
             {
-                var Id = fundo.Users.Where(x => x.email == email&& x.password==password).FirstOrDefault();
-                if (Id == null)
-                {
-                    return this.BadRequest(new { success = false, message = $"Invalid EmailId or Password" });
-                }
                 var result = this.userBL.LoginUser(email,password);
                 if (result != null)
                 {
