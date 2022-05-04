@@ -24,11 +24,13 @@ namespace FundoNote.Controllers
         INoteBL noteBL;
         public readonly IDistributedCache distributedCache;
         private string keyName = "Sampada";
+        public readonly IMemoryCache memoryCache;
         public NoteController(INoteBL noteBL, FundoContext fundo, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.noteBL = noteBL;
             this.fundo = fundo;
             this.distributedCache = distributedCache;
+            this.memoryCache=memoryCache;
         }
 
         //HTTP method to handle registration user request
